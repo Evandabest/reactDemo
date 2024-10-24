@@ -1,13 +1,33 @@
 
 import React from 'react';
+import { useEffect, useState } from 'react';
+import Pokemon from './components/pokemon';
 
 
 function App() {
+  const [name, setName] = useState(null);
+  const [picture, setPicture] = useState(null); 
+
+  const getPokemon = async (pokemonName) => {
+    const pokemon = await fetch(`https://pokeapi.co/api/v2/pokemon/${pokemonName}/`)
+    const data = await pokemon.json()
+    setPicture(data.sprites.front_default)
+    setName(data.name)
+  }
+  useEffect(() => {
+    getPokemon("pikachu")
+  }, [])
+
+  const search = (e) => {
+    getPokemon(e.target.previousElementSibling.value)
+  }
+
   return (
-    <div className="flex flex-col items-center w-full h-full">
-      <p className="text-2xl font-bold">Hello World!</p>
-      
-    </div>
+    <>
+      <Pokemon name = {name} picture = {picture} ></Pokemon>
+      <input type='text' required placeholder='Enter Pokemon Name'></input>
+      <button onClick = {search}>Search</button>
+    </>
   );
 }
 
